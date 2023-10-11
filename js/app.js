@@ -13,11 +13,11 @@ const taskLists = document.querySelector("#taskLists");
 const createUI = (inputValue) => {
   const list = document.createElement("div");
   list.classList.add("task_counter")
-  list.innerHTML = `<div class="flex mb-3 justify-between items-center border-2 border-black p-3">
+  list.innerHTML = `<div id="forAni" class="flex animate__animated animate__slideInLeft  mb-3 justify-between items-center border-2 border-black p-3">
           <div class="forToggle_chacked flex  items-center">
             <input type="checkbox" class="w-5 h-5 count" />
-            <div class="  edit_task ms-2">
-              ${inputValue}
+            <div class="edit_task ms-2" >
+              ${inputValue}   
             </div>
           </div>
           <div class="">
@@ -41,44 +41,17 @@ const createUI = (inputValue) => {
 
   // line-through
 
-  const forToggle_chacked = list.querySelector(".forToggle_chacked");
-  forToggle_chacked.addEventListener("click", () => {
-    forToggle_chacked.querySelector("input").toggleAttribute("checked");
-    forToggle_chacked.querySelector(".edit_task").classList.toggle("line-through");
-    to_complete();
-  })
+  const forToggle_chacked = list.querySelector(".count");
+  forToggle_chacked.addEventListener("click", count_Handler)
 
 
   // try to delete
   const task_del_btn = list.querySelector(".task_del_btn");
-  task_del_btn.addEventListener("click", () => {
-    if (confirm("Are U Sure to delete")) {
-      list.remove();
-      to_counter();
-      to_complete();
-
-    }
-
-    // confirm("Are u sure to delete") && list.remove();
-  });
+  task_del_btn.addEventListener("click", btn_del_Handler);
 
   // try to edit
   const task_edit_btn = list.querySelector(".task_edit_btn");
-  task_edit_btn.addEventListener("click", () => {
-
-    const edit_task = list.querySelector(".edit_task")
-
-    const inp_edit = document.createElement("input");
-    inp_edit.classList.add("border", "border-black", "p-1", "rounded")
-    inp_edit.value = edit_task.innerText;
-
-    edit_task.innerText = null
-    edit_task.append(inp_edit);
-
-    inp_edit.addEventListener("blur", () => {
-      edit_task.innerText = inp_edit.value
-    })
-  });
+  task_edit_btn.addEventListener("click", edit_btn_Handler);
 
   return list;
 
@@ -97,7 +70,6 @@ const to_complete = () => {
   doneCounter.innerText = complete;
 }
 
-console.log(to_complete())
 
 
 // handler functions 
@@ -123,6 +95,60 @@ const addBtn_handler = () => {
 
 };
 
+// delete-btn handler;
+
+const btn_del_Handler = (event) => {
+  if (confirm("Are U Sure to delete")) {
+
+    const forani = event.target.closest(".task_counter");
+    const child = forani.querySelector("#forAni");
+    child.classList.replace("animate__slideInLeft", "animate__slideOutRight");
+    forani.addEventListener(
+      "animationend", () => {
+        forani.remove();
+        to_counter();
+        to_complete();
+
+      }
+    )
+  }
+
+  // confirm("Are u sure to delete") && list.remove();
+}
+
+
+// edit handler ;
+
+const edit_btn_Handler = (event) => {
+  const editTaskDiv = event.target.closest('.task_counter');
+
+  const editMain = editTaskDiv.querySelector(".edit_task");
+
+  console.log(editTaskDiv)
+
+
+  const inp_edit = document.createElement("input");
+  inp_edit.classList.add("border", "border-black", "p-1", "rounded")
+  inp_edit.value = editMain.innerText;
+
+  editMain.innerText = null
+  editMain.append(inp_edit);
+
+  inp_edit.addEventListener("blur", () => {
+    editMain.innerText = inp_edit.value
+  })
+};
+
+// count handler 
+
+const count_Handler = (event) => {
+  const for_toggle = event.target.closest(".task_counter");
+  const forToggle_chacked = for_toggle.querySelector(".forToggle_chacked")
+  forToggle_chacked.querySelector("input").toggleAttribute("checked");
+  forToggle_chacked.querySelector(".edit_task").classList.toggle("line-through");
+  to_complete();
+}
+
 
 
 
@@ -133,7 +159,11 @@ const addBtn_handler = () => {
 // addBtn.onclick = addBtn_handler;
 addBtn.addEventListener("click", addBtn_handler);
 
-
+textInput.addEventListener("keyup", (event) => {
+  if (event.key === "Enter") {
+    addBtn_handler();
+  }
+})
 
 
 

@@ -11,5 +11,10 @@
   "license": "ISC",
   "devDependencies": {
     "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "animate.css": "^4.1.1",
+    "caniuse-lite": "^1.0.30001547",
+    "tailwindcss-animatecss": "^3.0.4"
   }
 }
